@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @version 1.0
  * @package CaptchaImg
@@ -17,9 +18,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 class CaptchaImg {
-	
+
 	public $font_path = 'fonts/';
 	public $font = 'Momоt___.ttf';
 	public $font_size = 30;
@@ -54,7 +54,7 @@ class CaptchaImg {
 	private $rgb_noise_color;
 	private $rgb_line_color;
 	private $rgb_arc_color;
-	
+
 	function draw() {
 		if ($this->code == '') {
 			if ($this->code_length > 0) {
@@ -63,36 +63,36 @@ class CaptchaImg {
 				throw new InvalidCodeLengthException('The code length must be greater than 0');
 			}
 		}
-		
+
 		$this->image = imagecreate($this->width, $this->height);
-        $this->tmp_image = imagecreate($this->width, $this->height);
-		
+		$this->tmp_image = imagecreate($this->width, $this->height);
+
 		$this->set_colors();
-		
+
 		if ($this->noise_count > 0) {
 			$this->draw_noise();
 		}
-		
+
 		if ($this->line_count > 0) {
 			$this->draw_lines();
 		}
-		
+
 		if ($this->arc_count > 0) {
 			$this->draw_arcs();
 		}
 
 		$this->draw_text();
-		
+
 		if ($this->text_distortion > 0) {
 			$this->distort_text();
 		}
-		
+
 		$this->output_image();
 	}
-	
+
 	private function draw_text() {
-		$font = $this->font_path.$this->font;
-		
+		$font = $this->font_path . $this->font;
+
 		if (!is_readable($font)) {
 			throw new TTFFileUnreadableException('Unable to read given TTF font');
 		} else {
@@ -104,11 +104,11 @@ class CaptchaImg {
 				$img = $this->image;
 				$text_color = $this->rgb_text_color;
 			}
-			
+
 			$x = $this->text_start_location > -1 ? $this->text_start_location : $this->width / 2 - $box[4] / 2;
 			$y = ($this->height - $box[5]) / 2;
 			$org_y = $y;
-			
+
 			if ($this->letter_jump_y > 0 || $this->letter_jump_x > 0) {
 				for ($i = 0; $i < strlen($this->code); $i++) {
 					if ($this->letter_jump_y > 0) {
@@ -133,34 +133,33 @@ class CaptchaImg {
 			}
 		}
 	}
-	
+
 	private function draw_noise() {
-        for ($i = 0; $i < $this->noise_count; $i++) {
-            $x = rand(0, $this->width);
-            $y = rand(0, $this->height);
-            $size = rand(5, 10);
-            if ($x - $size >= 0 && $y - $size >= 0) {
+		for ($i = 0; $i < $this->noise_count; $i++) {
+			$x = rand(0, $this->width);
+			$y = rand(0, $this->height);
+			$size = rand(5, 10);
+			if ($x - $size >= 0 && $y - $size >= 0) {
 				imagefilledarc($this->image, $x, $y, $size, $size, 0, 360, $this->rgb_noise_color, IMG_ARC_PIE);
 			}
-		
-        }
+		}
 	}
-	
+
 	private function draw_lines() {
 		for ($i = 0; $i < $this->line_count; $i++) {
 			$x1 = rand(0, $this->width);
-            $y1 = rand(0, $this->height);
+			$y1 = rand(0, $this->height);
 			$x2 = rand(0, $this->width);
-            $y2 = rand(0, $this->height);
+			$y2 = rand(0, $this->height);
 			imagesetthickness($this->image, $this->line_thickness);
 			imageline($this->image, $x1, $y1, $x2, $y2, $this->rgb_line_color);
 		}
 	}
-	
+
 	private function draw_arcs() {
 		for ($i = 0; $i < $this->arc_count; $i++) {
 			$x = rand(0, $this->width);
-            $y = rand(0, $this->height);
+			$y = rand(0, $this->height);
 			$width = rand(0, 100);
 			$height = rand(0, 100);
 			$start = rand(0, 360);
@@ -169,54 +168,53 @@ class CaptchaImg {
 			imagefilledarc($this->image, $x, $y, $width, $height, $start, $end, $this->rgb_arc_color, IMG_ARC_NOFILL);
 		}
 	}
-	
+
 	function log($text) {
 		$fp = fopen('/tmp/captcha.log', 'a');
-		fwrite($fp, $text."\n");
+		fwrite($fp, $text . "\n");
 		fclose($fp);
 	}
-	
+
 	private function distort_text() {
 		$numpoles = 3;
 
-        for ($i = 0; $i < $numpoles; ++ $i) {
-            $px[$i] = rand($this->width * 0.2, $this->width * 0.8);
-            $py[$i] = rand($this->height * 0.2, $this->height * 0.8);
-            $rad[$i] = rand($this->height * 0.2, $this->height * 0.8);
-            $tmp = ((- 0.0001 * rand(0,9999)) * 0.15) - .15;
-            $amp[$i] = $this->text_distortion * $tmp;
-        }		
-		
-		$color = imagecolorat($this->tmp_image, 0, 0);
-		
-		for ($ix = 0; $ix < $this->width; ++ $ix) {
-			for ($iy = 0; $iy < $this->height; ++ $iy) {
-				
-				$x = $ix;
-                $y = $iy;
+		for ($i = 0; $i < $numpoles; ++$i) {
+			$px[$i] = rand($this->width * 0.2, $this->width * 0.8);
+			$py[$i] = rand($this->height * 0.2, $this->height * 0.8);
+			$rad[$i] = rand($this->height * 0.2, $this->height * 0.8);
+			$tmp = ((- 0.0001 * rand(0, 9999)) * 0.15) - .15;
+			$amp[$i] = $this->text_distortion * $tmp;
+		}
 
-				for ($i = 0; $i < $numpoles; ++ $i) {
-                    $dx = $ix - $px[$i];
-                    $dy = $iy - $py[$i];
-                    if ($dx == 0 && $dy == 0) {
-                        continue;
-                    }
-                    $r = sqrt($dx * $dx + $dy * $dy);
-                    if ($r > $rad[$i]) {
-                        continue;
-                    }
-                    $rscale = $amp[$i] * sin(3.14 * $r / $rad[$i]);
-                    $x += $dx * $rscale;
-                    $y += $dy * $rscale;
-                }
-				
-				
-                $next_pixel = imagecolorat($this->tmp_image, $x, $y);
-				
+		$color = imagecolorat($this->tmp_image, 0, 0);
+
+		for ($ix = 0; $ix < $this->width; ++$ix) {
+			for ($iy = 0; $iy < $this->height; ++$iy) {
+
+				$x = $ix;
+				$y = $iy;
+
+				for ($i = 0; $i < $numpoles; ++$i) {
+					$dx = $ix - $px[$i];
+					$dy = $iy - $py[$i];
+					if ($dx == 0 && $dy == 0) {
+						continue;
+					}
+					$r = sqrt($dx * $dx + $dy * $dy);
+					if ($r > $rad[$i]) {
+						continue;
+					}
+					$rscale = $amp[$i] * sin(3.14 * $r / $rad[$i]);
+					$x += $dx * $rscale;
+					$y += $dy * $rscale;
+				}
+
+
+				$next_pixel = imagecolorat($this->tmp_image, $x, $y);
+
 				if ($next_pixel != $color) {
 					imagesetpixel($this->image, $ix, $iy, $this->rgb_text_color);
 				}
-				
 			}
 		}
 	}
@@ -226,101 +224,91 @@ class CaptchaImg {
 			throw new HeadersSentException("Headers has already been sent, maybe a php error was sent");
 		} else {
 			header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-			header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+			header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 			header("Cache-Control: no-store, no-cache, must-revalidate");
 			header("Cache-Control: post-check=0, pre-check=0", false);
 			header("Pragma: no-cache");
 			header('Content-Type: image/jpeg');
-			
+
 			imagejpeg($this->image);
 			imagedestroy($this->image);
 		}
 	}
-	
+
 	private function generate_code($length) {
 		$possible = '23456789bcdfghjkmnpqrstvwxyz';
 		$code = '';
 		$i = 0;
 		while ($i < $length) {
-			$code .= substr($possible, rand(0, strlen($possible)-1), 1);
+			$code .= substr($possible, rand(0, strlen($possible) - 1), 1);
 			$i++;
 		}
 		return $code;
 	}
-	
+
 	private function set_colors() {
 		try {
 			$this->rgb_bg_color = imagecolorallocate(
-				$this->image, 
-				Color::red($this->bg_color),
-				Color::green($this->bg_color), 
-				Color::blue($this->bg_color)
+					$this->image, Color::red($this->bg_color), 
+					Color::green($this->bg_color), 
+					Color::blue($this->bg_color)
 			);
-			
+
 			if ($this->text_transparency > 0) {
 				$alpha = intval($this->text_transparency / 100 * 127);
-				$this->rgb_text_color = imagecolorallocatealpha (
-					$this->image, 
-					Color::red($this->text_color),
-					Color::green($this->text_color), 
-					Color::blue($this->text_color),
-					$alpha
+				$this->rgb_text_color = imagecolorallocatealpha(
+						$this->image, Color::red($this->text_color), 
+						Color::green($this->text_color), 
+						Color::blue($this->text_color), 
+						$alpha
 				);
 			} else {
 				$this->rgb_text_color = imagecolorallocate(
-					$this->image, 
-					Color::red($this->text_color),
-					Color::green($this->text_color), 
-					Color::blue($this->text_color)
+						$this->image, Color::red($this->text_color), 
+						Color::green($this->text_color), 
+						Color::blue($this->text_color)
 				);
 				$this->rgb_noise_color = imagecolorallocate(
-					$this->image, 
-					Color::red($this->noise_color),
-					Color::green($this->noise_color), 
-					Color::blue($this->noise_color)
+						$this->image, Color::red($this->noise_color), 
+						Color::green($this->noise_color), 
+						Color::blue($this->noise_color)
 				);
 				$this->rgb_line_color = imagecolorallocate(
-					$this->image, 
-					Color::red($this->line_color),
-					Color::green($this->line_color), 
-					Color::blue($this->line_color)
+						$this->image, Color::red($this->line_color), 
+						Color::green($this->line_color), 
+						Color::blue($this->line_color)
 				);
 				$this->rgb_arc_color = imagecolorallocate(
-					$this->image, 
-					Color::red($this->arc_color),
-					Color::green($this->arc_color), 
-					Color::blue($this->arc_color)
+						$this->image, Color::red($this->arc_color), 
+						Color::green($this->arc_color), 
+						Color::blue($this->arc_color)
 				);
 			}
 
 			// add colors for temp image
 			$this->rgb_tmp_bg_color = imagecolorallocate(
-					$this->tmp_image, 
-					Color::red($this->tmp_bg_color),
-					Color::green($this->tmp_bg_color), 
-					Color::blue($this->tmp_bg_color)
+					$this->tmp_image, Color::red($this->tmp_bg_color), Color::green($this->tmp_bg_color), Color::blue($this->tmp_bg_color)
 			);
 			$this->rgb_tmp_text_color = imagecolorallocate(
-					$this->image, 
-					Color::red($this->tmp_text_color),
-					Color::green($this->tmp_text_color), 
-					Color::blue($this->tmp_text_color)
+					$this->image, Color::red($this->tmp_text_color), Color::green($this->tmp_text_color), Color::blue($this->tmp_text_color)
 			);
 		} catch (InvalidColorException $e) {
 			throw $e;
 		}
 	}
-	
-	private  function isHeadersSent() {
+
+	private function isHeadersSent() {
 		// headers already sent or there is content in the output buffor
-        if (headers_sent() === true || (ob_get_contents() !== false && strlen(ob_get_contents()) > 0)) {
-            return true;
-        }
-        return false;
-    }
+		if (headers_sent() === true || (ob_get_contents() !== false && strlen(ob_get_contents()) > 0)) {
+			return true;
+		}
+		return false;
+	}
+
 }
+
 class Color {
-	
+
 	public static function red($color) {
 		if (substr($color, 0, 1) != '#' && strlen($color) < 7) {
 			throw new InvalidColorException('Given color is not a valid hex color code');
@@ -328,7 +316,7 @@ class Color {
 			return Color::get_color($color, 'red');
 		}
 	}
-	
+
 	public static function green($color) {
 		if (substr($color, 0, 1) != '#' && strlen($color) < 7) {
 			throw new InvalidColorException('Given color is not a valid hex color code');
@@ -336,7 +324,7 @@ class Color {
 			return Color::get_color($color, 'green');
 		}
 	}
-	
+
 	public static function blue($color) {
 		if (substr($color, 0, 1) != '#' && strlen($color) < 7) {
 			throw new InvalidColorException('Given color is not a valid hex color code');
@@ -344,20 +332,20 @@ class Color {
 			return Color::get_color($color, 'blue');
 		}
 	}
-	
+
 	private static function get_color($color, $additive) {
 		$red = 255;
 		$green = 255;
-        $blue = 255;
-		
+		$blue = 255;
+
 		if (substr($color, 0, 1) != '#' && strlen($color) < 7) {
 			throw new InvalidColorException('Given color is not a valid hex color code');
 		} else {
 			$red = hexdec(substr($color, 1, 2));
-            $green = hexdec(substr($color, 3, 2));
-            $blue = hexdec(substr($color, 5, 2));
+			$green = hexdec(substr($color, 3, 2));
+			$blue = hexdec(substr($color, 5, 2));
 		}
-		
+
 		switch ($additive) {
 			case 'red':
 				return $red;
@@ -369,7 +357,9 @@ class Color {
 				return 255;
 		}
 	}
+
 }
+
 class InvalidColorException extends Exception {}
 class TTFFileUnreadableException extends Exception {}
 class HeadersSentException extends Exception {}
