@@ -26,7 +26,7 @@ include('captchaimg.class.php');
 $cap = new CaptchaImg();
 $cap->draw();
 ?>
-```php
+``` php
 
 ### Step 3: Make an image in your HTML.
 
@@ -40,7 +40,7 @@ You also need a form that reads the user input to check if the user wrote the sa
 	<img src="demo.php"/>
 	<input type="submit" name="submit-img" value="Submit"/>
 </form>
-```
+``` html
 
 ### Step 4: Validate the captcha.
 
@@ -54,7 +54,7 @@ You change the properties of the image by changing the public variables in the C
 
 ``` php
 $cap->base_dir = '/usr/local/nginx/html/captchaimg/';
-```php
+``` php
 
 
 
