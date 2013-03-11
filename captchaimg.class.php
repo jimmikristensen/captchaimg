@@ -108,6 +108,7 @@ class CaptchaImg {
 
 		if (!is_readable($font)) {
 			throw new TTFFileUnreadableException('Unable to read given TTF font|'.$font);
+
 		} else {
 			$box = imageftbbox($this->font_size, 0, $font, $this->code);
 
