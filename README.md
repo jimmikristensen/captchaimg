@@ -76,6 +76,7 @@ $cap->line_count = 20;							// adds 20 lines in random locations on the image
 $cap->line_color = '#ff0000';					// sets the color of the lines to red
 $cap->line_thickness = 3;						// sets the line thickness to 3 pixels
 $cap->text_angle = 10;							// will tilt each letter 10 pixels forwards or backwards
+$cap->draw();									// outputs the image
 
 ```
 
