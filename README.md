@@ -67,12 +67,17 @@ $cap->width = 300;								// sets the width of the image to 300 pixels
 $cap->height = 40;								// sets the height of the image to 40 pixels
 $cap->bg_color = '#ffffff';						// sets the background color of the image to white
 $cap->text_color = '#ff0000';					// sets the color of the font to red
-$cap->
-$cap->
+$cap->noise_count = 100;						// adds 100 noise circles to the image
+$cap->noise_color = '#ff0000';					// sets the noise color to red
+$cap->arc_count = 10;							// adds 10 random arcs to the image
+$cap->arc_color = '#ff0000';					// sets the arc color to red
+$cap->arc_thickness = 3;						// sets the thickness of the arc to 3 pixels
+$cap->line_count = 20;							// adds 20 lines in random locations on the image
+$cap->line_color = '#ff0000';					// sets the color of the lines to red
+$cap->line_thickness = 3;						// sets the line thickness to 3 pixels
+$cap->text_angle = 10;							// will tilt each letter 10 pixels forwards or backwards
 
 ```
-
-
 
 
 License
