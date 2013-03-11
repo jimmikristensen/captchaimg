@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Refreshing Image using JavaScript</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<style>
+			body {
+				background-color: #F4F4F4;
+				color: #004458;
+				font-family: arial;
+				font-size: 13px;
+				line-height: 140%;
+			}
+			#content {
+				width: 500px;
+				margin: 0 auto;
+				background-color: #D9ECF4;
+				border-radius: 4px 4px 4px 4px;
+				box-shadow: 0 0 2px #999999;
+				padding: 1px 30px 30px 30px;
+			}
+			label {
+				display: block;
+			}
+			img {
+				border: 1px solid black;
+				display: block;
+				margin: 10px auto;
+			}
+			#form-div {
+				text-align: center;
+			}
+			a {
+				display: block;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<h1>Refreshing Image using JavaScript</h1>
+			<p>
+				This example illustrates how JavaScript can be used to refresh a new image. 
+				It simply uses a CAPTCHA that holds a random text.
+			</p>
+			<div id="form-div">
+				<form action="result.php" method="post">
+					<label for="captcha">Write the content of the image</label>
+					<input type="text" name="captcha" value=""/>
+					<a href="#" onclick="refreshCaptcha()">Refresh Image</a>
+					<img id="captcha_img" src="demo.php"/>
+					<input type="submit" name="submit-img" value="Submit"/>
+				</form>
+			</div>
+		</div>
+		<script>
+			function refreshCaptcha() {
+				document.getElementById('captcha_img').src = 'demo.php?'+Math.random();
+			}
+		</script>
+	</body>
+</html>

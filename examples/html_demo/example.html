@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Simple HTML Form</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<style>
+			body {
+				background-color: #F4F4F4;
+				color: #004458;
+				font-family: arial;
+				font-size: 13px;
+				line-height: 140%;
+			}
+			#content {
+				width: 500px;
+				margin: 0 auto;
+				background-color: #D9ECF4;
+				border-radius: 4px 4px 4px 4px;
+				box-shadow: 0 0 2px #999999;
+				padding: 1px 30px 30px 30px;
+			}
+			label {
+				display: block;
+			}
+			img {
+				border: 1px solid black;
+				display: block;
+				margin: 10px auto;
+			}
+			#form-div {
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="content">
+			<h1>Simple HTML Form</h1>
+			<p>
+				This is a simple HTML form using the simplest form of the CAPTCHA image. 
+				It simply uses a CAPTCHA that holds a random text.
+			</p>
+			<div id="form-div">
+				<form action="result.php" method="post">
+					<label for="captcha">Write the content of the image</label>
+					<input type="text" name="captcha" value=""/>
+					<img src="demo.php"/>
+					<input type="submit" name="submit-img" value="Submit"/>
+				</form>
+			</div>
+		</div>
+	</body>
+</html>
